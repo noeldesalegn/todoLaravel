@@ -26,12 +26,27 @@ class TodoList extends Component
         // send flash message
         session()->flash('success','Created');
     }
+    // public function delete(Todo $todo){
+    //         $todo->delete();
+    //     } or
 
+    public function delete($todoId){
+        Todo::find($todoId)->delete();
+    }
+
+    public function toggle($todoId){
+        $todo = Todo::find($todoId);
+        $todo->comleted = !$todo->comleted;
+        $todo->save();
+
+    }
     public function render()
     {
 
         return view('livewire.todo-list',[
-            'todos' => Todo::latest()->paginate(3)
+            'todos' => Todo::latest()
+            ->where('name','like',"%{$this->search}%")
+            ->paginate(5)
         ]);
     }
 }
